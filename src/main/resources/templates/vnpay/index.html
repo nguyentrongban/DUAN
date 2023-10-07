@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ví dụ sử dụng API thanh toán VNPay</title>
+</head>
+<body >
+  <h1>Ví dụ sử dụng API thanh toán VNPay</h1>
+
+  <form action="/api/payment/create_payment" method="get">
+    <input type="number" name="amount" placeholder="Số tiền">
+                       
+    <!-- <input type="submit" value="Thanh toán"> -->
+    <button ng-click="createPayment()">Tạo thanh toán</button>
+    
+  </form>
+
+  <div id="response"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
+  <script>
+    var app = angular.module('myApp', []);
+
+    app.controller('MyController', function($scope, $http) {
+      $scope.createPayment = function() {
+        $http({
+          method: 'GET', 
+          url: '/api/payment/create_payment',
+          params: {
+            amount: $scope.amount,
+          },
+        }).then(function successCallback(response) {
+          $scope.response = response.data;
+        }, function errorCallback(response) {
+          $scope.response = response.data;
+        });
+      };
+    });
+
+    angular.bootstrap(document, ['myApp']);
+  </script>
+</body>
+</html>

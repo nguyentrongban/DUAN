@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>KẾT QUẢ THANH TOÁN</title>
+        <!-- Bootstrap core CSS -->
+        <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
+        <!-- Custom styles for this template -->
+        <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet"> 
+        <script src="/vnpay_jsp/assets/jquery-1.11.3.min.js"></script>
+    </head>
+    <body>
+        <script>
+            //Begin process return from VNPAY
+            // Tạo một đối tượng HashMap để lưu trữ các tham số
+			const fields = new Map();
+			
+			// Duyệt qua tất cả các tham số của yêu cầu
+			for (const param of request.getParameterNames()){
+			  // Mã hóa tên và giá trị tham số
+			  const fieldName = encodeURIComponent(param);
+			  const fieldValue = encodeURIComponent(request.getParameter(param));
+			
+				  // Nếu giá trị tham số không trống thì thêm tham số vào đối tượng HashMap
+			  if (fieldValue) {
+			    fields.set(fieldName, fieldValue);
+			  }
+			}
+		
+			// Lấy giá trị của tham số vnp_SecureHash
+			const vnpSecureHash = request.getParameter("vnp_SecureHash");
+			
+			// Xóa các tham số vnp_SecureHash và vnp_SecureHashType khỏi đối tượng HashMap
+			if (fields.has("vnp_SecureHashType")) {
+			  fields.delete("vnp_SecureHashType");
+			}
+			if (fields.has("vnp_SecureHash")) {
+			  fields.delete("vnp_SecureHash");
+			}
+			
+			// Tính toán giá trị signValue
+			const signValue = Config.hashAllFields(fields);
+
+            </script> 
+        <!--Begin display -->
+        <div class="container">
+            <div class="header clearfix">
+                <h3 class="text-muted">KẾT QUẢ THANH TOÁN</h3>
+            
+            </div>
+            <div class="table-responsive">
+                <div class="form-group">
+                    <label >Mã giao dịch thanh toán:</label>
+                    <label><span th:text="${vnp_TxnRef}"></span></p></label>
+                </div>    
+                <div class="form-group">
+                    <label >Số tiền:</label>
+                    <label><span th:text="${vnp_Amount}"></span></p></label>
+                </div>  
+                <div class="form-group">
+                    <label >Mô tả giao dịch:</label>
+                    <label><span th:text="${vnp_OrderInfo}"></span></label>
+                </div> 
+                <div class="form-group">
+                    <label >Mã lỗi thanh toán:</label>
+                    <label><span th:text="${vnp_ResponseCode}"></span></label>
+                </div> 
+               <!--  <div class="form-group">
+                    <label >Mã giao dịch tại CTT VNPAY-QR:</label>
+                    <label><%=request.getParameter("vnp_TransactionNo")%></label>
+                </div> 
+                <div class="form-group">
+                    <label >Mã ngân hàng thanh toán:</label>
+                    <label><%=request.getParameter("vnp_BankCode")%></label>
+                </div> 
+                <div class="form-group">
+                    <label >Thời gian thanh toán:</label>
+                    <label><%=request.getParameter("vnp_PayDate")%></label>
+                </div>  -->
+                <div class="form-group">
+                    <label >Tình trạng giao dịch:</label>
+                    
+                    	<script>
+                    	
+                        
+                    	 // Lấy giá trị của các tham số
+                    	const vnp_TransactionStatus = request.getParameter("vnp_TransactionStatus");
+
+                    	// Xác thực giá trị signValue
+                    	if (signValue === vnpSecureHash) {
+                    	  // Nếu trạng thái giao dịch thành công thì hiển thị thông báo "Thành công"
+                    	  if (vnp_TransactionStatus === "00") {
+                    		  alert("Thành công");
+                    	  } else {
+                    	    // Nếu trạng thái giao dịch không thành công thì hiển thị thông báo "Không thành công"
+                    	     alert("Không thành công");
+                    	  }
+                    	} else {
+                    	  // Nếu giá trị signValue không hợp lệ thì hiển thị thông báo "invalid signature"
+                    	  alert("invalid signature");
+                    	} 
+
+                    	</script>
+                    
+                </div> 
+            </div>
+            <p>
+                &nbsp;
+            </p>
+            <footer class="footer">
+                <p>&copy; VNPAY 2020</p>
+            </footer>
+        </div>  
+    </body>
+</html>
+
+
+
